@@ -45,18 +45,19 @@ public class EmployeePayrollDBService {
         return employeeList;
     }
 
+    // UC4 - PreparedStatement salary update
     public int updateEmployeeSalary(String name, double salary) {
 
-        String sql = String.format(
-                "UPDATE employee_payroll SET salary = %.2f WHERE name = '%s';",
-                salary, name
-        );
+        String sql = "UPDATE employee_payroll SET salary = ? WHERE name = ?";
 
         try {
             Connection connection = this.getConnection();
-            Statement statement = connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            return statement.executeUpdate(sql);
+            preparedStatement.setDouble(1, salary);
+            preparedStatement.setString(2, name);
+
+            return preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
