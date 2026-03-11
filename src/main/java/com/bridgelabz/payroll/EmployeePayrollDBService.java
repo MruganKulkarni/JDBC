@@ -7,6 +7,14 @@ import java.util.List;
 
 public class EmployeePayrollDBService {
 
+    private Connection getConnection() throws SQLException {
+        String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
+        String username = "root";
+        String password = "root";
+
+        return DriverManager.getConnection(jdbcURL, username, password);
+    }
+
     public List<EmployeePayrollData> readData() {
 
         List<EmployeePayrollData> employeeList = new ArrayList<>();
@@ -14,12 +22,7 @@ public class EmployeePayrollDBService {
         String sql = "SELECT * FROM employee_payroll";
 
         try {
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/payroll_service",
-                    "root",
-                    "root"
-            );
-
+            Connection connection = this.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
@@ -40,5 +43,25 @@ public class EmployeePayrollDBService {
         }
 
         return employeeList;
+    }
+
+    public int updateEmployeeSalary(String name, double salary) {
+
+        String sql = String.format(
+                "UPDATE employee_payroll SET salary = %.2f WHERE name = '%s';",
+                salary, name
+        );
+
+        try {
+            Connection connection = this.getConnection();
+            Statement statement = connection.createStatement();
+
+            return statement.executeUpdate(sql);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }
