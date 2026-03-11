@@ -1,5 +1,6 @@
 package com.bridgelabz.payroll;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeePayrollService {
@@ -18,13 +19,19 @@ public class EmployeePayrollService {
         employeePayrollDBService.updateEmployeeSalary(name, salary);
     }
 
+    public List<EmployeePayrollData> getEmployeesByDateRange(LocalDate startDate, LocalDate endDate) {
+        return employeePayrollDBService.getEmployeesByDateRange(startDate, endDate);
+    }
+
     public static void main(String[] args) {
 
         EmployeePayrollService service = new EmployeePayrollService();
 
-        service.updateEmployeeSalary("Terisa", 3000000.00);
-
-        List<EmployeePayrollData> employees = service.readEmployeePayrollData();
+        List<EmployeePayrollData> employees =
+                service.getEmployeesByDateRange(
+                        LocalDate.of(2018, 1, 1),
+                        LocalDate.now()
+                );
 
         employees.forEach(System.out::println);
     }

@@ -8,6 +8,7 @@ import java.util.List;
 public class EmployeePayrollDBService {
 
     private Connection getConnection() throws SQLException {
+
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
         String username = "root";
         String password = "root";
@@ -22,6 +23,7 @@ public class EmployeePayrollDBService {
         String sql = "SELECT * FROM employee_payroll";
 
         try {
+
             Connection connection = this.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -45,12 +47,13 @@ public class EmployeePayrollDBService {
         return employeeList;
     }
 
-    // UC4 - PreparedStatement salary update
+    // UC4
     public int updateEmployeeSalary(String name, double salary) {
 
         String sql = "UPDATE employee_payroll SET salary = ? WHERE name = ?";
 
         try {
+
             Connection connection = this.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -64,5 +67,41 @@ public class EmployeePayrollDBService {
         }
 
         return 0;
+    }
+
+    // UC5
+    public List<EmployeePayrollData> getEmployeesByDateRange(LocalDate startDate, LocalDate endDate) {
+
+        List<EmployeePayrollData> employeeList = new ArrayList<>();
+
+        String sql = "SELECT * FROM employee_payroll WHERE start BETWEEN ? AND ?";
+
+        try {
+
+            Connection connection = this.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setDate(1, Date.valueOf(startDate));
+            preparedStatement.setDate(2, Date.valueOf(endDate));
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double salary = resultSet.getDouble("salary");
+                LocalDate start = resultSet.getDate("start").toLocalDate();
+
+                employeeList.add(
+                        new EmployeePayrollData(id, name, salary, start)
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return employeeList;
     }
 }
