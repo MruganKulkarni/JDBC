@@ -23,16 +23,14 @@ public class EmployeePayrollService {
         return employeePayrollDBService.getEmployeesByDateRange(startDate, endDate);
     }
 
+    public void getSalaryStatisticsByGender() {
+        employeePayrollDBService.getSalaryStatisticsByGender();
+    }
+
     public static void main(String[] args) {
 
         EmployeePayrollService service = new EmployeePayrollService();
 
-        List<EmployeePayrollData> employees =
-                service.getEmployeesByDateRange(
-                        LocalDate.of(2018, 1, 1),
-                        LocalDate.now()
-                );
-
-        employees.forEach(System.out::println);
+        service.getSalaryStatisticsByGender();
     }
 }
